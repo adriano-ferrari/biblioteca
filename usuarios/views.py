@@ -5,7 +5,8 @@ from .models import Usuario
 
 
 def login(request):
-    return render(request, 'login.html')
+    status = request.GET.get('status')
+    return render(request, 'login.html', {'status':status})
 
 
 def cadastro(request):
@@ -40,3 +41,25 @@ def valida_cadastro(request):
         return redirect('/auth/cadastro/?status=0')
     except:
         return redirect('/auth/cadastro/?status=4')
+
+
+def valida_login(request):
+    email = request.POST.get('email')
+    senha = request.POST.get('senha')
+
+    senha = sha256(senha.encode()).hexdigest()
+
+    usuario = Usuario.objects.filter(email=email).filter(senha=senha)
+    
+    if len(usuario) == 0:
+        return redirect('/auth/login/?status=1')
+    elif len(usuario) > 0:
+        request.session['usuario'] = usuario[0].id
+        return redirect(f'/livro/home/')
+
+    return HttpResponse(f'{email} {senha}')
+
+
+def sair(request):
+    request.session.flush()
+    return redirect('/auth/login/')
