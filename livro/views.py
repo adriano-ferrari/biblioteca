@@ -2,8 +2,7 @@ from django.shortcuts import redirect, render
 from django.http import HttpResponse
 
 from usuarios.models import Usuario
-from .models import Livros, Categoria
-
+from .models import Livros, Categoria, Emprestimo
 
 
 def home(request):
@@ -20,8 +19,11 @@ def visualiza(request, id):
         livro = Livros.objects.get(id=id)
         if request.session.get('usuario') == livro.usuario.id:
             categoria_livro = Categoria.objects.filter(usuario = request.session.get('usuario'))
+            emprestimos = Emprestimo.objects.filter(livro=livro)
 
-            return render(request, 'visualiza.html', {'livro': livro, 'categoria_livro': categoria_livro})
+            return render(request, 'visualiza.html', {'livro': livro,
+                                                      'categoria_livro': categoria_livro,
+                                                      'emprestimos': emprestimos})
         else:
             return HttpResponse('Esse livro não é seu.')
     return redirect('/auth/login/?status=2')
