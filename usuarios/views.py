@@ -5,6 +5,8 @@ from .models import Usuario
 
 
 def login(request):
+    if request.session.get('usuario'):
+        return redirect('/livro/home/')
     status = request.GET.get('status')
     return render(request, 'login.html', {'status':status})
 

@@ -2,9 +2,9 @@ from django.shortcuts import redirect, render
 from django.http import HttpResponse
 
 from usuarios.models import Usuario
-from .models import Livros
+from .models import Livros, Categoria
 
-# Create your views here.
+
 
 def home(request):
     if request.session.get('usuario'):
@@ -16,5 +16,12 @@ def home(request):
     
 
 def visualiza(request, id):
-    livro = Livros.objects.get(id=id)
-    return render(request, 'visualiza.html', {'livro':livro})
+    if request.session.get('usuario'):
+        livro = Livros.objects.get(id=id)
+        if request.session.get('usuario') == livro.usuario.id:
+            categoria_livro = Categoria.objects.filter(usuario = request.session.get('usuario'))
+
+            return render(request, 'visualiza.html', {'livro': livro, 'categoria_livro': categoria_livro})
+        else:
+            return HttpResponse('Esse livro não é seu.')
+    return redirect('/auth/login/?status=2')
