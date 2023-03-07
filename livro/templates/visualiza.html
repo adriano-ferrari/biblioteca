@@ -3,6 +3,24 @@
 {% load filtros %}
 
 {% block 'conteudo' %}
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+              Deseja realmente excluir?
+              <a href="{% url 'excluir' id_livro %}" class="btn btn-danger">Excluir</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="container">
         <br>
         <form action="#" method="POST">
@@ -40,6 +58,11 @@
             <br>
             <br>
         </form>
+
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal2">
+          Excluir
+        </button>
         <hr>
         <h1>Histórico de empréstimo</h1>
         <table class="table table-striped table-light">

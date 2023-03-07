@@ -3,7 +3,7 @@ from django.http import HttpResponse
 
 from usuarios.models import Usuario
 from .models import Livros, Categoria, Emprestimo
-from .forms import CadastroLivro
+from .forms import CadastroLivro, CategoriaLivro
 
 
 def home(request):
@@ -32,12 +32,15 @@ def visualiza(request, id):
             form = CadastroLivro()
             form.fields['usuario'].initial = request.session['usuario']
             form.fields['categoria'].queryset = Categoria.objects.filter(usuario=usuario)
+            form_categoria = CategoriaLivro()
 
             return render(request, 'visualiza.html', {'livro': livro,
                                                       'categoria_livro': categoria_livro,
                                                       'emprestimos': emprestimos,
                                                       'usuario_logado': request.session.get('usuario'),
-                                                      'form': form})
+                                                      'form': form,
+                                                      'id_livro': id,
+                                                      'form_categoria': form_categoria})
         else:
             return HttpResponse('Esse livro não é seu.')
     return redirect('/auth/login/?status=2')
@@ -52,3 +55,8 @@ def cadastra_livro(request):
             return redirect('/livro/home')
         else:
             return HttpResponse('DADOS INVÁLIDOS!')
+
+
+def excluir(request, id):
+    livro = Livros.objects.get(id=id).delete()
+    return redirect('livro/home')
